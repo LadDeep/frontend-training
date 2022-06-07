@@ -1,15 +1,20 @@
-/* form{
-    display: table;
+form{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 .form-control{
-    display: table-row;
+    display: flex;
+    flex-direction: row;
+    padding: 5px 0;
 }
-.form-control > p, .form-control > input, .form-control > label, .form-control > select{
-    display: table-cell;
-    margin-bottom: 8px;
-    vertical-align: middle;
-} */
-
+.form-control label, p{
+    width: 200px;
+}
+.form-control:last-of-type{
+    justify-content: center;
+    width:400px;
+}
 input, select{
     margin-left: 10px;
     border-color: steelblue;
@@ -18,7 +23,3 @@ input, select{
 input[type=submit], input[type=reset]{
     border-radius: 3px;
 }
-/* input.form-control{
-    display: table-cell;
-    margin-bottom: 8px;
-} */
