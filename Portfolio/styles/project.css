@@ -1,0 +1,30 @@
+.project-img{
+    /* display: inline-block; */
+    height: 600px;
+    width: 60%;
+    object-fit:cover;
+    margin: 2.5em 2em;
+    border-radius: 1em;
+}
+.wrapper {
+    display: inline-block;
+    margin: 3em 0;
+}
+.project-desc{
+    margin-top: 1.5em;
+    display: inline-block;
+    width: min(400px, 100%);
+    vertical-align: top;
+    padding: 2em;
+ }
+.project-desc li{
+    margin: 0.5em 0;
+}
+#page-container{
+    position: relative;
+    min-height: 100vh;
+}
+footer{
+    position: absolute;
+    bottom: 0;
+}

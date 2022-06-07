@@ -1,0 +1,21 @@
+.tile{
+    display: inline-block;
+    margin: 3em;
+}
+.tile a{
+    font-size: x-large;
+    background-image: none;
+}
+.tile img{
+    height: 700px;
+    width: 700px;
+    object-fit: cover;
+    border-radius: 1em;
+}
+
+.tile:hover img{
+    opacity: 0.85;
+}
+#content-wrap{
+    text-align: center;
+}
