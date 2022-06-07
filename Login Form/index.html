@@ -8,7 +8,7 @@
   <title>Sample Form</title>
 </head>
 <body>
-  <!-- <form method="POST">
+  <form method="POST">
     <div class="form-control">
         <label for="uname">Username:</label>
         <input type="text" name="uname" id="uname">
@@ -58,87 +58,10 @@
         <label for="self_service">Self-Service</label>
       </div>
     </div>
-    <input class="form-control" type="submit" value="Login">
-    <input class="form-control" type="reset" value="Reset">
-  </form> -->
-  <form action="post">
-    <table>
-      <tr>
-        <td>
-          <label for="uname">Username:</label>
-        </td>
-        <td>
-          <input type="text" name="uname" id="uname">
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <label for="pwd">Password:</label>
-        </td>
-        <td>
-          <input type="password" name="pwd" id="pwd">
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <label for="city">City of Employment:</label>
-        </td>
-        <td>
-          <input type="text" name="city" id="city">
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <label for="servers">Web server:</label>
-        </td>
-        <td>
-          <select name="servers" id="servers">
-            <option value="" disabled selected hidden>-Choose a server-</option>
-            <option value="1">Firebase Auth</option>
-            <option value="2">Auth0</option>
-          </select>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          Please specify your role:
-        </td>
-        <td style="padding-top: 1em;">
-          <input type="radio" name="role" id="admin" value="Admin">
-          <label for="admin">Admin</label>
-          <br>
-          <input type="radio" name="role" id="engineer" value="Engineer">
-          <label for="engineer">Engineer</label>
-          <br>
-          <input type="radio" name="role" id="manager" value="Manager">
-          <label for="manager">Manager</label>
-          <br>
-          <input type="radio" name="role" id="guest" value="Guest">
-          <label for="guest">Guest</label>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          Single Sign-on to the following:
-        </td>
-        <td style="padding: 1em 0;">
-          <input type="checkbox" name="mail" id="mail" value="Mail">
-          <label for="mail">Mail</label>
-          <br>    
-          <input type="checkbox" name="payroll" id="payroll">
-          <label for="payroll">Payroll</label>
-          <br>
-          <input type="checkbox" name="self_service" id="self_service">
-          <label for="self_service">Self-Service</label>
-        </td>
-      </tr>
-      <tr>
-        <td colspan="2" align="center">
-          <input type="submit" value="Login">
-          <input type="reset" value="Reset">
-        </td>
-      </tr>
-    </table>
+    <div class="form-control">
+      <input type="submit" value="Login">
+      <input type="reset" value="Reset">
+    </div>
   </form>
 </body>
 </html>
