@@ -5,17 +5,25 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="style.css">
+  <script src="https://kit.fontawesome.com/a46e5efce5.js" crossorigin="anonymous"></script>  <link rel="stylesheet" href="styles/main.css">
+  <script defer src="index.js"></script>
   <title>Sample Form</title>
 </head>
 <body>
-  <form method="POST">
+  <form id="userLogin" action="" method="GET">
     <div class="form-control">
         <label for="uname">Username:</label>
-        <input type="text" name="uname" id="uname">
+        <input type="text" name="uname" id="uname" required="true">
     </div>
     <div class="form-control">
         <label for="pwd">Password:</label>
-        <input type="password" name="pwd" id="pwd">
+        <div>
+          <input type="password" name="pwd" id="pwd" required="true">
+          <i class="fa-solid fa-circle-exclamation"></i>
+          <span>Must be 8 characters long</span>
+          <i class="fa-solid fa-circle-exclamation"></i>
+          <span>Must have atleast 1 digit</span>
+        </div>
     </div>
     <div class="form-control">
         <label for="city">City of Employment:</label>
