@@ -10,20 +10,18 @@
   <title>Sample Form</title>
 </head>
 <body>
-  <form id="userLogin" action="" method="GET">
+  <form id="userLogin" action="" method="POST">
     <div class="form-control">
         <label for="uname">Username:</label>
-        <input type="text" name="uname" id="uname" required="true">
+        <input type="text" name="uname" id="uname">
+        <i class="fa-solid fa-circle-exclamation"></i>
+        <small></small>
     </div>
     <div class="form-control">
-        <label for="pwd">Password:</label>
-        <div>
-          <input type="password" name="pwd" id="pwd" required="true">
-          <i class="fa-solid fa-circle-exclamation"></i>
-          <span>Must be 8 characters long</span>
-          <i class="fa-solid fa-circle-exclamation"></i>
-          <span>Must have atleast 1 digit</span>
-        </div>
+        <label for="password">Password:</label>
+        <input type="password" name="password" id="password">
+        <i class="fa-solid fa-circle-exclamation"></i>
+        <small></small>
     </div>
     <div class="form-control">
         <label for="city">City of Employment:</label>
