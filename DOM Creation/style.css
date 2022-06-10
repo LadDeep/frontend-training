@@ -1,0 +1,13 @@
+#apps{
+    padding: 0;
+    list-style-position: inside;
+    font-size: xx-large;
+}
+.flex-container{
+    display: inline-flex;
+    align-items: baseline;
+}
+img{
+    height: 0.8em;
+    margin: 0 8px;
+}
