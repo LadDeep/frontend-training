@@ -15,7 +15,8 @@ const months = {
 
 const calenderTable = document.getElementById('calender');
 const d = new Date();
-let currMonth = d.getMonth();
+let currMonth = d.getMonth(),
+    currYear = d.getFullYear();
 const monthYearDisplay = document.getElementById('month-and-year');
 const previousBtn = document.getElementById('previous');
 const nextBtn = document.getElementById('next');
@@ -29,8 +30,8 @@ const isLeapYear = (year)=>{
         return false;
 }
 
-const getEndDate = (currMonth) =>{
-    switch(currMonth){
+const getEndDate = (month) =>{
+    switch(month){
         case months.FEBRUARY:
             return isLeapYear(d.getFullYear) ? 29 : 28;
         case months.APRIL:
@@ -49,17 +50,14 @@ const clearTable = () => {
     }
 }
 
-const createCalender = (currMonth) => {
+const createCalender = (month, year) => {
     clearTable();
     
-    d.setMonth(currMonth);
+    d.setFullYear(year);
+    d.setMonth(month);
     d.setDate(1);
-
-    // TODO: handling the year when entering previous year
-    currMonth = (currMonth%12+12)%12;
-    
     let date = d.getDate();
-    let endDate = getEndDate(currMonth);
+    let endDate = getEndDate(month);
     let day = d.getDay();
     let week=1;
     do{
@@ -81,15 +79,19 @@ const createCalender = (currMonth) => {
         week++;
     } while(date<=endDate);
     
-    monthYearDisplay.textContent = Object.keys(months).find(key => months[key] == currMonth)+', '+d.getFullYear();
+    monthYearDisplay.textContent = Object.keys(months).find(key => months[key] == month)+', '+year;
 }
 
-createCalender(currMonth);
+createCalender(currMonth, currYear);
 
 previousBtn.addEventListener("click",()=>{
-    createCalender(--currMonth);
+    currYear = currMonth===0 ? --currYear : currYear;
+    currMonth = currMonth===0? 11 : --currMonth;
+    createCalender(currMonth, currYear);
 })
 
 nextBtn.addEventListener("click",()=>{
-    createCalender(++currMonth);
+    currYear = currMonth===11 ? ++currYear : currYear;
+    currMonth = currMonth===11? 0 : ++currMonth;
+    createCalender(currMonth, currYear);
 })
