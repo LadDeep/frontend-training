@@ -15,12 +15,10 @@ const months = {
 
 const calenderTable = document.getElementById('calender');
 const d = new Date();
-const currMonth = d.getMonth();
-
-d.setDate(1);
-let date = d.getDate();
-console.log(date);
-
+let currMonth = d.getMonth();
+const monthYearDisplay = document.getElementById('month-and-year');
+const previousBtn = document.getElementById('previous');
+const nextBtn = document.getElementById('next');
 
 const isLeapYear = (year)=>{
     if(year%100 === 0 && year%400 === 0)
@@ -31,38 +29,67 @@ const isLeapYear = (year)=>{
         return false;
 }
 
-let endDate;
-switch(currMonth){
-    case months.FEBRUARY:
-        endDate = isLeapYear(d.getFullYear) ? 29 : 28;
-    case months.APRIL:
-    case months.JUNE:
-    case months.SEPTEMBER:
-    case months.NOVEMBER:
-        endDate = 30;
-    default:
-        endDate = 31;
+const getEndDate = (currMonth) =>{
+    switch(currMonth){
+        case months.FEBRUARY:
+            return isLeapYear(d.getFullYear) ? 29 : 28;
+        case months.APRIL:
+        case months.JUNE:
+        case months.SEPTEMBER:
+        case months.NOVEMBER:
+            return 30;
+        default:
+            return 31;
+    }
 }
 
-let day = d.getDay();
-
-let week=1;
-do{
-    const weekRow = document.createElement('tr');
-    for(let i=1; i<=7; i++){
-        let currDateData = document.createElement('td');
-        
-        // enter empty td for days belonging to previous month
-        //  or date exceeds last day of particular month
-        if((i<=day && week==1) || date>endDate){
-            weekRow.appendChild(currDateData);
-            continue;
-        }
-        currDateData.textContent = date;
-        weekRow.appendChild(currDateData);
-        date++;
+const clearTable = () => {
+    while(calenderTable.childNodes.length > 2){
+        calenderTable.removeChild(calenderTable.lastChild);
     }
-    calenderTable.appendChild(weekRow); 
-    week++;
-} while(date<=endDate);
+}
 
+const createCalender = (currMonth) => {
+    clearTable();
+    
+    d.setMonth(currMonth);
+    d.setDate(1);
+
+    // TODO: handling the year when entering previous year
+    currMonth = (currMonth%12+12)%12;
+    
+    let date = d.getDate();
+    let endDate = getEndDate(currMonth);
+    let day = d.getDay();
+    let week=1;
+    do{
+        const weekRow = document.createElement('tr');
+        for(let i=1; i<=7; i++){
+            let currDateData = document.createElement('td');
+            
+            // enter empty td for days belonging to previous month
+            //  or date exceeds last day of particular month
+            if((i<=day && week==1) || date>endDate){
+                weekRow.appendChild(currDateData);
+                continue;
+            }
+            currDateData.textContent = date;
+            weekRow.appendChild(currDateData);
+            date++;
+        }
+        calenderTable.appendChild(weekRow); 
+        week++;
+    } while(date<=endDate);
+    
+    monthYearDisplay.textContent = Object.keys(months).find(key => months[key] == currMonth)+', '+d.getFullYear();
+}
+
+createCalender(currMonth);
+
+previousBtn.addEventListener("click",()=>{
+    createCalender(--currMonth);
+})
+
+nextBtn.addEventListener("click",()=>{
+    createCalender(++currMonth);
+})

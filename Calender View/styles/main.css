@@ -13,3 +13,13 @@
 #calender td:nth-last-child(2){
     color: green
 }
+.month-toggle{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 1em;
+}
+.btn{
+    width: 5em;
+    /* padding: 0.5em 0; */
+}
