@@ -12,39 +12,50 @@ const months = {
     'NOVEMBER': 10,
     'DECEMBER': 11 
 };
-const monthDaysMap = {
-    [months.FEBRUARY]:29,
-    [months.APRIL, months.JUNE, months.SEPTEMBER, months.NOVEMBER]:30,
-    [months.JANUARY, months.MARCH, months.MAY, months.JULY, months.AUGUST, months.OCTOBER, months.DECEMBER]:31
-}
 
 const calenderTable = document.getElementById('calender');
 const d = new Date();
-d.setMonth(4);
-const month = d.getMonth();
-console.log(month);
-
+const currMonth = d.getMonth();
 
 d.setDate(1);
 let date = d.getDate();
 console.log(date);
 
-// TODO: find end date of month which should be used in outer loop to eleminate extra conditions
-// let endDate;
 
-// for (const iterator of object) {
-    
-// }
+const isLeapYear = (year)=>{
+    if(year%100 === 0 && year%400 === 0)
+        return true;
+    else if(year%100 !== 0 && year%4 === 0)
+        return true;
+    else
+        return false;
+}
+
+let endDate;
+switch(currMonth){
+    case months.FEBRUARY:
+        endDate = isLeapYear(d.getFullYear) ? 29 : 28;
+    case months.APRIL:
+    case months.JUNE:
+    case months.SEPTEMBER:
+    case months.NOVEMBER:
+        endDate = 30;
+    default:
+        endDate = 31;
+}
 
 let day = d.getDay();
-// console.log(day);
-let j=0;
+
+let week=1;
 do{
     const weekRow = document.createElement('tr');
-    //enter empty td
     for(let i=1; i<=7; i++){
+        // Returning as soon as the date exceeds last day of particular month
+        if(date>endDate) break;
         let currDateData = document.createElement('td');
-        if(i<day && j==0){
+        
+        // enter empty td for days belonging to previous month
+        if(i<=day && week==1){
             weekRow.appendChild(currDateData);
             continue;
         }
@@ -53,10 +64,6 @@ do{
         date++;
     }
     calenderTable.appendChild(weekRow); 
-    j++;
-} while(date<=29);
+    week++;
+} while(date<=endDate);
 
-if(date==31){
-    d.setDate(31)
-    let currMonth = d.getMonth();
-}
