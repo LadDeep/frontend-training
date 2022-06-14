@@ -50,11 +50,12 @@ let week=1;
 do{
     const weekRow = document.createElement('tr');
     for(let i=1; i<=7; i++){
+        // Returning as soon as the date exceeds last day of particular month
+        if(date>endDate) break;
         let currDateData = document.createElement('td');
         
         // enter empty td for days belonging to previous month
-        //  or date exceeds last day of particular month
-        if((i<=day && week==1) || date>endDate){
+        if(i<=day && week==1){
             weekRow.appendChild(currDateData);
             continue;
         }
