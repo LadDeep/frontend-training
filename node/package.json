@@ -1,4 +1,6 @@
 {
+    "main": "index.js",
+    "private": "true",
     "dependencies": {
         "chalk": "^5.0.1"
     }
