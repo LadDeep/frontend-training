@@ -1,0 +1,83 @@
+body{
+    margin: 0%;
+    box-sizing: border-box;
+    font-family: 'Open Sans', sans-serif;
+}
+a{
+    text-decoration: none;
+}
+.nav-bar{
+    text-align: left;
+    padding: 5em 7em;
+    background-color: rgb(0, 173, 150);
+}
+.nav-bar a{
+    display: inline-block;
+    padding: 0.875rem 1.5em;
+    color: white;
+    text-align: center;
+    vertical-align: middle;
+    text-transform: uppercase;
+    font-size: medium;
+    font-weight: 900;
+}
+
+.nav-bar a:hover{
+    border-bottom: 1px solid white;
+    background-image: none;
+}
+.nav-bar a:active{
+    font-weight: 900;
+}
+.nav-links{
+    float: right;
+}
+.nav-bar .brand{
+    font-weight: bolder;
+    font-size: x-large;
+}
+.nav-bar .brand:hover{
+    border: 0;
+}
+
+.profile-img{
+    display: block;
+    border-radius: 50%;
+    margin: 0 auto;
+}
+.link{
+    color: rgb(0, 173, 150);
+}
+.link:hover{
+    background-image: url('/images/ink-brush-stroke-collection/4783116.jpg');
+    background-size: 100% 100%;
+}
+ul{
+    padding: 0%;
+    list-style: none;
+}
+h1, h2, h3, h4, h5, h6{
+    font-family: 'Merriweather', serif;
+}
+.page-container{
+    /* position: relative; */
+    min-height: 80vh;
+    overflow: hidden;
+}
+.content-wrap{
+    margin: 4em auto;
+    width: 70%;
+}
+.footer{
+    /* position: absolute; */
+    /* bottom: 0; */
+    width: 100%;
+    background-color:white;
+    text-align: center;
+    padding: 2em 0;
+    box-shadow: 0px 0px 10px black;
+}
+.footer li{
+    display: inline-block;
+    margin: 0.2em 0.5em 0.5em;
+}
