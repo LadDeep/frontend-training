@@ -1,0 +1,25 @@
+#calender {
+    font-family: 'Open Sans', sans-serif;
+    border-collapse: collapse;
+}
+#calender td, #calender th{
+    text-align: center;
+    border: 1px solid lightgrey;
+    padding: 0.5em 1.5em;
+}
+#calender td:first-child{
+    color: red;
+}
+#calender td:nth-last-child(2){
+    color: green
+}
+.month-toggle{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 1em;
+    width: min(500px, 100%);
+}
+.btn{
+    width: 5em;
+}
