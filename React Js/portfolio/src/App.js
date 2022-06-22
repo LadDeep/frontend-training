@@ -1,23 +1,50 @@
-import logo from './logo.svg';
 import './App.css';
+import { Navbar } from './components/Navbar';
+import { Footer } from './components/Footer';
+import { Body } from './components/Body';
+
+const SOCIAL_LINKS = [
+  { 
+    name: "LinkedIn",
+    link: "https://www.linkedin.com/in/deep-lad-prav09/",
+    icon: "fa-brands fa-linkedin-in"
+  },
+  { 
+    name: "Github",
+    link: "https://github.com/laddeep",
+    icon: "fa-brands fa-github-alt"},
+  { 
+    name: "Instagram",
+    link: "https://instagram.com/",
+    icon: "fa-brands fa-instagram"
+  },
+  { 
+    name: "WhatsApp",
+    link: "https://wa.me/9638221183",
+    icon: "fa-brands fa-whatsapp"
+  }
+];
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Navbar/>
+      <Body>
+          <img 
+            className="profile-img"
+            src="images/profile-img.jpeg" 
+            alt="Profile of Deep Lad" 
+            height="250px" 
+          />
+          <h1>Hi, I am Deep!</h1>
+          <p>
+            Hello everyone! I am Deep Lad, a Computer Engineer by education and a developer by profession. Solely into learning something about everything. My interest are way more rooted in creativity. Even my leisure time is dedicated to creative stuffs.
+          </p>
+          <p>
+            And now, here I am  at Axelor Technologies on the journey of nurturing my interests and hoping to fulfil company's goals. 
+          </p>
+      </Body>
+      <Footer media={SOCIAL_LINKS}/>
     </div>
   );
 }
