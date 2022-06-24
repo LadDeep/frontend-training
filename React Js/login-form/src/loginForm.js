@@ -1,6 +1,8 @@
 import React from 'react';
 import { useState, useCallback } from 'react';
 
+const VALID_PASSWORD = (/^(?=.{8,32}$)(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).*/);
+
 function LoginForm(){
     const initialInputsState = "{username:'', password:'', city:'', server:'', role:'', sso:{mail:false, payroll:false, self_service:false}}"
     const initialErrorsState = "{username:'', password:''}";
@@ -23,11 +25,6 @@ function LoginForm(){
         }
     }
 
-
-    const isPasswordValid = (inputs) => {
-        return (/^(?=.{8,32}$)(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).*/).test(inputs);
-    };
-
     const validate = useCallback((inputs) => {
         setErrors({});
         const errors = {};
@@ -38,7 +35,7 @@ function LoginForm(){
         if(!inputs.password){
             errors.password = "Password cannot be empty";
         }
-        else if(!isPasswordValid(inputs.password)){
+        else if(!VALID_PASSWORD.test(inputs.password)){
             errors.password = "Password must have 8 characters and atleast 1 number";
         }
         return errors;
