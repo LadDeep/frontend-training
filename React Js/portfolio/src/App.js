@@ -3,7 +3,7 @@ import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { Body } from './components/Body';
 
-const SOCIAL_LINKS = [
+const socialMedia = [
   { 
     name: "LinkedIn",
     link: "https://www.linkedin.com/in/deep-lad-prav09/",
@@ -44,7 +44,7 @@ function App() {
             And now, here I am  at Axelor Technologies on the journey of nurturing my interests and hoping to fulfil company's goals. 
           </p>
       </Body>
-      <Footer media={SOCIAL_LINKS}/>
+      <Footer media={socialMedia}/>
     </div>
   );
 }
