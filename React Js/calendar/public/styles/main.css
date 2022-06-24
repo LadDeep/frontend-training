@@ -1,16 +1,16 @@
-#calender {
+.calender {
     font-family: 'Open Sans', sans-serif;
     border-collapse: collapse;
 }
-#calender td, #calender th{
+.calender td, .calender th{
     text-align: center;
     border: 1px solid lightgrey;
     padding: 0.5em 1.5em;
 }
-#calender td:first-child{
+.calender td:first-child{
     color: red;
 }
-#calender td:nth-last-child(2){
+.calender td:nth-last-child(2){
     color: green
 }
 .month-toggle{
