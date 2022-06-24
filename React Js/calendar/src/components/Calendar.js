@@ -1,88 +1,87 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
-export const Calendar = ()=>{
-    const months = ['JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE', 'JULY', 'AUGUST', 'SEPTEMBER', 'OCTOBER', 'NOVEMBER', 'DECEMBER']; 
-    const weekDays = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"]
+const months = ['JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE', 'JULY', 'AUGUST', 'SEPTEMBER', 'OCTOBER', 'NOVEMBER', 'DECEMBER']; 
+const weekDays = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"]
+const DAYS_IN_WEEK = 7;
+const FIRST_MONTH = 0;
+const LAST_MONTH = 11;
 
-    const [currDate, setCurrDate] = useState(new Date());
-    const [currMonth, setCurrMonth] = useState(currDate.getMonth());
-    const [currYear, setCurrYear] = useState(currDate.getFullYear());
-    const [dates, setDates] = useState();
+const date = new Date();
 
-    useEffect(()=>{
-        setDates(createCalender(currMonth, currYear));
-        console.log("effects:",currYear, months[currMonth], currDate);
-    },[currMonth, currYear]);
+export function Calendar() {
+    const [{ year, month }, setState] = useState({
+        year: date.getFullYear(),
+        month: date.getMonth(),
+    });
 
-    const getEndDate = (year, month) =>{
-        return new Date(year, month, 0).getDate();
-    }
+    const handleNext = () => {
+        setState(({ year, month }) =>  {
+        if (month === LAST_MONTH) {
+            return {
+            year: year + 1,
+            month: FIRST_MONTH,
+            };
+        } else {
+            return { year, month: month + 1 };
+        }
+        });
+    };
+
+    const handlePrevious = () => {
+        setState(({ year, month }) => {
+        if (month === FIRST_MONTH) {
+            return {
+            year: year - 1,
+            month: LAST_MONTH,
+            };
+        } else {
+            return { year, month: month - 1 };
+        }
+        });
+    };
     
-    const handleNext = ()=>{
-        let year = currMonth===11 ? currYear+1 : currYear;
-        let month = currMonth===11 ? 0 : currMonth+1;
-        setCurrDate(new Date(year, month))
-        setCurrMonth(month);
-        setCurrYear(year);
-        
-        console.log("next:",currYear, months[currMonth], currDate);
-    }
+    const getMonthDateSlots = (month, year) => {
+        let endDate = new Date(year, month+1, 0);
+        let startDate = new Date(year, month);
+        let startDateDay = startDate.getDay();
+        let endDateDay = endDate.getDay();
+        let noOfDaysInMonth = endDate.getDate();
+        let datesToDisplay = [];
 
-    const handlePrevious = ()=>{
-        let year = currMonth===0 ? currYear-1 : currYear;
-        let month = currMonth===0 ? 11 : currMonth-1;
-        setCurrDate(new Date(year, month))
-        setCurrMonth(month);
-        setCurrYear(year);
+        // Padding for dates of previous month with space
+        for(let i=1; i<=startDateDay; i++){
+            datesToDisplay.push("");
+        }
 
-        console.log("next:",currYear, months[currMonth], currDate);
-    }
-    
-    const createCalender = (month, year) => {
-        console.log("createCalendar:",currDate, months[currMonth], currYear);
-        
-        let endDate = getEndDate(year, month+1);
-        let startDate = new Date(currDate);
-        startDate.setDate(1)
-        let day = startDate.getDay();
-        let emptyDays = [];
-        
-        for(let i=1; i<=day; i++){
-            emptyDays.push(
-                <td>{""}</td>
-            );
+        // Pushing dates of current month
+        for(let i=1; i<=noOfDaysInMonth; i++){
+            datesToDisplay.push(i);
         }
         
-        let datesToDisplay = [...emptyDays];
-        for(let i=1; i<=endDate; i++){
-            datesToDisplay.push(
-                <td key={i}>{i}</td>
-            );
+        // Padding for dates of next month with space
+        for(let i=endDateDay; i<=DAYS_IN_WEEK; i++){
+            datesToDisplay.push("");
         }
         
-        while(datesToDisplay.length%7!==1){
-            datesToDisplay.push(
-                <td>{""}</td>
-            )
-        }
-        
-        let week = [];
-        let weeks = [];
+        let currentWeek = [];
+        let weeksOfMonth = [];
         datesToDisplay.forEach((day, i)=>{
-            if (i % 7 !== 0) {
-                week.push(day)
+            if (i % DAYS_IN_WEEK !== 0) {
+                currentWeek.push(day)
             } else {
-                weeks.push(<tr>{week}</tr>);
-                week = [];
-                week.push(day)
+                weeksOfMonth.push(currentWeek);
+                currentWeek = [];
+                currentWeek.push(day)
             }
         })
-        return weeks;
+        return weeksOfMonth;
     }
+
+    const weeksOfMonth = getMonthDateSlots(month, year);
 
     return (
         <>
-            <table id="calender">
+            <table className="calender">
                 <tbody>
                     <tr>
                         {
@@ -91,12 +90,18 @@ export const Calendar = ()=>{
                             )
                         }
                     </tr>
-                    {dates}
+                    {weeksOfMonth && weeksOfMonth.map((week)=>
+                        <tr>
+                            {week && week.map((day)=>
+                                <td>{day}</td>
+                            )}
+                        </tr>
+                    )}
                 </tbody>
             </table>
             <div className="month-toggle">
                 <button id="previous" className="btn" onClick={handlePrevious}>Previous</button>
-                <span id="month-and-year">{months[currMonth]}, {currYear}</span>
+                <span>{months[month]}, {year}</span>
                 <button id="next" className="btn" onClick={handleNext}>Next</button>
             </div>
         </>
