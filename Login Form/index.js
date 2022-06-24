@@ -1,6 +1,7 @@
+const VALID_PASSWORD = (/^(?=.{8,32}$)(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).*/);
+
 const usernameInput = document.getElementById('uname');
 const passwordInput = document.getElementById('password');
-
 const formField = document.getElementById('userLogin');
 
 const showError = (input, message) =>{
@@ -24,17 +25,21 @@ const showSuccess = (input) =>{
     errorMessageEle.textContent = '';
 }
 
-const isRequired = (input) => input === '' ? false : true;
+const resetInputs = (inputs)=>{
+    inputs.forEach(input => {
+        if(input.parentElement.classList.contains('error'))
+            input.parentElement.classList.remove('error')
+        if(input.parentElement.classList.contains('success'))
+            input.parentElement.classList.remove('success')
+        if(input.parentElement.querySelector('small'))
+            input.parentElement.querySelector('small').textContent ='';
+    });
+}
 
-const isPasswordValid = (input) => {
-    return (/^(?=.{8,32}$)(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).*/).test(input);
-};
-
-const checkPassword = ()=>{
-    const password = passwordInput.value;
-    if(!isRequired(password)){
+const checkPassword = (password)=>{
+    if(!password){
         showError(passwordInput, "Password cannot be empty");
-    } else if(!isPasswordValid(password)){
+    } else if(!VALID_PASSWORD.test(password)){
         showError(passwordInput, "Password must have 8 characters and atleast 1 number");
     } else {
         showSuccess(passwordInput);
@@ -43,9 +48,8 @@ const checkPassword = ()=>{
     return false;
 };
 
-const checkUsername = ()=>{
-    const username = usernameInput.value;
-    if(!isRequired(username)){
+const checkUsername = (username)=>{
+    if(!username){
         showError(usernameInput, "Username is mandatory");
         return false;
     } else {
@@ -70,9 +74,14 @@ const debounce = (func, delay = 500) => {
 formField.addEventListener('submit', (event)=>{
     event.preventDefault();
 
-    let isValid;
-    let hasUsername = checkUsername(), hasPass = checkPassword()
-    isValid = hasUsername && hasPass;
+    let isValid = checkUsername(usernameInput.value) && checkPassword(passwordInput.value);
+    if(isValid){
+        // do something;
+    }
+})
+
+formField.addEventListener('reset', (event)=>{
+    resetInputs([usernameInput, passwordInput]);
 })
 
 const checkInputs = (input)=>{

@@ -32,10 +32,6 @@ input[type=submit], input[type=reset]{
     padding: 3px 0;
     color:red;
 }
-.error input{
-    border-color: red;
-}
-
 .success i, .success small{
     display:none;
 }
