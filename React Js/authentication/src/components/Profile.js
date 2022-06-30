@@ -3,7 +3,7 @@ import React from 'react'
 const Profile = (props) => {
     return (
         <div>
-            <img src={props.user.profileImg}/>
+            <img src={props.user.profileImg} alt={`Profile of ${props.name}`}/>
                 <h2>{props.user.name}</h2>
                 <div>
                     <Info heading="Id" info={props.user.id} />
