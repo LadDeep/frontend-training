@@ -7,7 +7,7 @@ html, body{
 }
 .content {
     margin: 0.5em 2em 1em;
-    height: 100vh;
+    border-right: 2px solid gray;
 }
 .btn {
     display: block;
@@ -21,8 +21,9 @@ form {
     margin: 1em;
 }
 label {
+    display: grid;
+    grid-template-columns: 0.5fr 1fr;
     margin: 0 auto;
-    width:fit-content;
     padding: 1em 0 0;
 }
 input {
@@ -34,10 +35,16 @@ input {
     padding:  0 1em;
     height: 100vh;
 }
+.profile-container{
+    display: flex;
+    flex-direction: column;
+}
 .user-profile {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
     text-align: center;
     padding: 1em;
-    border-left: 2px solid gray;
 }
 .user-info-heading{
     border-bottom: 1px solid lightgrey;
@@ -46,4 +53,64 @@ input {
 .user-info-container{
     display: flex;
     flex-direction: column;
+}
+.label{
+    color: white;
+    padding: 0.25em 0.5em;
+    margin: 0 0.25em;
+    border-radius: 5px;
+    font-size: small;
+}
+.card{
+    box-shadow: 1px 1px 4px rgb(0 0 0 / 25%);
+    padding: 1em;
+    margin: 1em;
+    min-width: 400px;
+}
+.labels-container{
+    margin: 0.25em;
+    text-align: right;
+}
+@media only screen and (max-width: 768px) {
+    .cards-view{
+        display: flex;
+        flex-direction: column;
+        /* width: 100%; */
+    }
+    
+    .col-2{
+        display: flex;
+        flex-direction: column;
+    }
+    .content{
+        border: none;
+        border-bottom: 2px solid gray;
+    }
+    .profile-contianer{
+        flex-direction: row;
+    }
+    .profile-container > div{
+        padding: 0 1em;
+    }
+    .user-profile{
+        display: grid;
+        grid-template-columns: 1fr fit-content(100px);
+    }
+    .btn{
+        margin: auto;
+    }
+}
+
+@media only screen and (min-width: 769px) and (max-width: 1024px){
+    .cards-view{
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media only screen and (min-width: 1025px){
+    .cards-view{
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+    }
 }

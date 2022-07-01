@@ -1,7 +1,9 @@
 import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import Button from "@mui/material/Button";
+import { TextField } from "@mui/material";
+import { Stack } from "@mui/material";
 const SUCCESS = 200;
 
 const Login = (props) => {
@@ -21,34 +23,40 @@ const Login = (props) => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    console.log(username, password, baseURL);
 
     axios
       .post(
         "/login.jsp",
         {
-          "username": username,
-          "password": password,
+          username: username,
+          password: password,
         },
         {
-          "baseURL": baseURL,
-          "withCredentials": true,
+          baseURL: baseURL,
+          // "withCredentials": true,
         }
       )
       .then((response) => {
         if (response.status === SUCCESS) {
           axios
             .get("/ws/app/info", {
-              "baseURL": baseURL,
-              "withCredentials": true,
+              baseURL: baseURL,
+              withCredentials: true,
             })
             .then((response) => {
-              props.logIn({
+              const csrf = response.headers["x-csrf-token"];
+              console.log(csrf);
+              const customerData=fetchCustomerData(csrf);
+              const userData = {
                 id: response.data["user.id"],
                 name: response.data["user.name"],
                 lang: response.data["user.lang"],
                 profileImg: baseURL + "/" + response.data["user.image"],
                 type: response.data["user.login"],
-              });
+              };
+              // console.log(customerData.length());
+              props.logIn(userData, customerData);
               navigate("/");
             })
             .catch((error) => {
@@ -59,6 +67,91 @@ const Login = (props) => {
       .catch((error) => {
         console.log(error);
       });
+  };
+
+  const fetchCustomerData = (csrf) => {
+    const fetchedResult = [];
+    axios
+      .post(
+        "/ws/rest/com%2Eaxelor%2Eapps%2Ebase%2Edb%2EPartner/search",
+        {
+          fields: [
+            "fiscalPosition.code",
+            "isProspect",
+            "isEmployee",
+            "isSupplier",
+            "isSubcontractor",
+            "fullName",
+            "fixedPhone",
+            "partnerTypeSelect",
+            "companyStr",
+            "mainAddress",
+            "picture",
+            "titleSelect",
+            "isCustomer",
+            "partnerCategory",
+            "isCarrier",
+            "emailAddress.address",
+            "registrationCode",
+            "isFactor",
+          ],
+          sortBy: null,
+          data: {
+            _domain:
+              "self.isContact = false AND (self.isCustomer = true OR self.isProspect = true)",
+            _domainContext: {
+              _isCustomer: "true",
+              _domain:
+                "self.isContact = false AND (self.isCustomer = true OR self.isProspect = true)",
+              "json-enhance": true,
+              _id: null,
+            },
+          },
+          limit: 39,
+          offset: 0,
+          translate: true,
+        },
+        {
+          baseURL: baseURL,
+          headers: {
+            "Content-Type": "application/json;charset=UTF-8",
+            "X-Requested-With": "XMLHttpRequest",
+            "X-CSRF-Token": csrf,
+          },
+          withCredentials: true,
+        }
+      )
+      .then((response) => {
+        // console.log(response.data);
+        const customerArray = response.data["data"];
+        for (let i = 0; i < customerArray.length; i++) {
+          const customer = customerArray[i];
+          const customerData = {
+            'id': customer.id,
+            'picture': customer.picture,
+            'name': customer.fullName,
+            'code': customer.registrationCode,
+            'address': customer.mainAddress,
+            'phone': customer.fixedPhone,
+            'partnerCategory': customer.partnerCategory,
+            'companyStr': customer.companyStr,
+            'fiscalPos': {
+              'isCustomer': customer.isCarrier,
+              'isCarrier': customer.isCustomer,
+              'isEmployee': customer.isEmployee,
+              'isFactor': customer.isFactor,
+              'isProspect': customer.isProspect,
+              'isSubcontractor': customer.isSubcontractor,
+              'isSupplier': customer.isSupplier
+            }
+          }
+          fetchedResult.push(customerData);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+      return fetchedResult;
   };
 
   return (
@@ -74,6 +167,34 @@ const Login = (props) => {
           />
         </label>
 
+        {/* <Stack>
+          <TextField
+            sx={{padding: 1}}
+            required
+            name="username"
+            label="Username"
+            onChange={handleChange}
+
+          />
+          <TextField 
+            sx={{padding: 1}}
+            type="password"
+            name="password"
+            label="Password"
+            value={password}
+            onChange={handleChange}
+          />  
+          <TextField 
+            sx={{padding: 1}}
+            type="url"
+            name="baseURL"
+            label="Server URL"
+            value={baseURL}
+            onChange={handleChange}
+          />
+
+        </Stack> */}
+
         <label>
           Password:
           <input
@@ -83,6 +204,16 @@ const Login = (props) => {
             onChange={handleChange}
           />
         </label>
+        <label>
+          Server URL:
+          <input
+            type="url"
+            name="baseURL"
+            value={baseURL}
+            onChange={handleChange}
+          />
+        </label>
+        {/* <Button type="submit" variant="contained">Login</Button> */}
         <input className="btn" type="submit" value="Login" />
       </form>
     </div>
