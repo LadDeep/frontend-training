@@ -1,9 +1,7 @@
 import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Button from "@mui/material/Button";
-import { TextField } from "@mui/material";
-import { Stack } from "@mui/material";
+
 const SUCCESS = 200;
 
 const Login = (props) => {
@@ -23,8 +21,6 @@ const Login = (props) => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log(username, password, baseURL);
-
     axios
       .post(
         "/login.jsp",
@@ -34,7 +30,6 @@ const Login = (props) => {
         },
         {
           baseURL: baseURL,
-          // "withCredentials": true,
         }
       )
       .then((response) => {
@@ -46,7 +41,6 @@ const Login = (props) => {
             })
             .then((response) => {
               const csrf = response.headers["x-csrf-token"];
-              console.log(csrf);
               const customerData=fetchCustomerData(csrf);
               const userData = {
                 id: response.data["user.id"],
@@ -55,7 +49,6 @@ const Login = (props) => {
                 profileImg: baseURL + "/" + response.data["user.image"],
                 type: response.data["user.login"],
               };
-              // console.log(customerData.length());
               props.logIn(userData, customerData);
               navigate("/");
             })
@@ -122,7 +115,6 @@ const Login = (props) => {
         }
       )
       .then((response) => {
-        // console.log(response.data);
         const customerArray = response.data["data"];
         for (let i = 0; i < customerArray.length; i++) {
           const customer = customerArray[i];
@@ -166,35 +158,6 @@ const Login = (props) => {
             onChange={handleChange}
           />
         </label>
-
-        {/* <Stack>
-          <TextField
-            sx={{padding: 1}}
-            required
-            name="username"
-            label="Username"
-            onChange={handleChange}
-
-          />
-          <TextField 
-            sx={{padding: 1}}
-            type="password"
-            name="password"
-            label="Password"
-            value={password}
-            onChange={handleChange}
-          />  
-          <TextField 
-            sx={{padding: 1}}
-            type="url"
-            name="baseURL"
-            label="Server URL"
-            value={baseURL}
-            onChange={handleChange}
-          />
-
-        </Stack> */}
-
         <label>
           Password:
           <input
@@ -213,7 +176,6 @@ const Login = (props) => {
             onChange={handleChange}
           />
         </label>
-        {/* <Button type="submit" variant="contained">Login</Button> */}
         <input className="btn" type="submit" value="Login" />
       </form>
     </div>
