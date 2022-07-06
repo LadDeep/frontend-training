@@ -11,6 +11,7 @@ const Login = (props) => {
     baseURL: "",
   });
   const navigate = useNavigate();
+  
   const handleChange = (event) => {
     const { name, value } = event.target;
     setState((prevState) => ({
@@ -41,7 +42,7 @@ const Login = (props) => {
             })
             .then((response) => {
               const csrf = response.headers["x-csrf-token"];
-              const customerData=fetchCustomerData(csrf);
+              localStorage.setItem("X-CSRF Token", csrf);
               const userData = {
                 id: response.data["user.id"],
                 name: response.data["user.name"],
@@ -49,7 +50,7 @@ const Login = (props) => {
                 profileImg: baseURL + "/" + response.data["user.image"],
                 type: response.data["user.login"],
               };
-              props.logIn(userData, customerData);
+              props.logIn(userData);
               navigate("/");
             })
             .catch((error) => {
@@ -60,90 +61,6 @@ const Login = (props) => {
       .catch((error) => {
         console.log(error);
       });
-  };
-
-  const fetchCustomerData = (csrf) => {
-    const fetchedResult = [];
-    axios
-      .post(
-        "/ws/rest/com%2Eaxelor%2Eapps%2Ebase%2Edb%2EPartner/search",
-        {
-          fields: [
-            "fiscalPosition.code",
-            "isProspect",
-            "isEmployee",
-            "isSupplier",
-            "isSubcontractor",
-            "fullName",
-            "fixedPhone",
-            "partnerTypeSelect",
-            "companyStr",
-            "mainAddress",
-            "picture",
-            "titleSelect",
-            "isCustomer",
-            "partnerCategory",
-            "isCarrier",
-            "emailAddress.address",
-            "registrationCode",
-            "isFactor",
-          ],
-          sortBy: null,
-          data: {
-            _domain:
-              "self.isContact = false AND (self.isCustomer = true OR self.isProspect = true)",
-            _domainContext: {
-              _isCustomer: "true",
-              _domain:
-                "self.isContact = false AND (self.isCustomer = true OR self.isProspect = true)",
-              "json-enhance": true,
-              _id: null,
-            },
-          },
-          limit: 39,
-          offset: 0,
-          translate: true,
-        },
-        {
-          baseURL: baseURL,
-          headers: {
-            "Content-Type": "application/json;charset=UTF-8",
-            "X-Requested-With": "XMLHttpRequest",
-            "X-CSRF-Token": csrf,
-          },
-          withCredentials: true,
-        }
-      )
-      .then((response) => {
-        const customerArray = response.data["data"];
-        for (let i = 0; i < customerArray.length; i++) {
-          const customer = customerArray[i];
-          const customerData = {
-            'id': customer.id,
-            'picture': customer.picture,
-            'name': customer.fullName,
-            'code': customer.registrationCode,
-            'address': customer.mainAddress,
-            'phone': customer.fixedPhone,
-            'partnerCategory': customer.partnerCategory,
-            'companyStr': customer.companyStr,
-            'fiscalPos': {
-              'isCustomer': customer.isCarrier,
-              'isCarrier': customer.isCustomer,
-              'isEmployee': customer.isEmployee,
-              'isFactor': customer.isFactor,
-              'isProspect': customer.isProspect,
-              'isSubcontractor': customer.isSubcontractor,
-              'isSupplier': customer.isSupplier
-            }
-          }
-          fetchedResult.push(customerData);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-      return fetchedResult;
   };
 
   return (

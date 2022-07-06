@@ -13,7 +13,8 @@ const Label = (props) => {
 }
 
 
-export const CustomerCard = (props) => {
+const CustomerCard = (props) => {
+    console.log('CC',props);
     return (
         <div className="card">
             <strong>{props.company.name}</strong>
@@ -44,7 +45,8 @@ export const CustomerCard = (props) => {
                     <Label type={props.company.fiscalPos.isSupplier} name="Vendor" color="#7D54FC"/>
                 </h4> 
             </span>
-
         </div>
     )
 }
+
+export default CustomerCard
