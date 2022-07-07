@@ -20,10 +20,12 @@ const Form = (props) => {
     props.setCurrentState(false);
   };
 
+  const mode = props.mode ? props.mode : "";
+
   return (
     <form onSubmit={handleSubmit}>
       <fieldset>
-        <legend>{props.mode} Customer</legend>
+        <legend>{mode} Customer</legend>
         <label>
           Name:
           <input
@@ -69,7 +71,7 @@ const Form = (props) => {
             onChange={handleChange}
           />
         </label>
-        <input className="btn" type="submit" value={props.mode} />
+        <input className="btn" type="submit" value={mode} />
         <input
           className="btn"
           type="button"

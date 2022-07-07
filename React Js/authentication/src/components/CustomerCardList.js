@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import AddCustomerForm from "./AddCustomerForm";
 import CustomerCard from "./CustomerCard";
 
-const CustomerCardList = () => {
+const CustomerCardList = ({ baseURL }) => {
   const [customerData, setCustomerData] = useState([]);
   const [isAdding, setIsAdding] = useState(false);
 
@@ -50,7 +50,7 @@ const CustomerCardList = () => {
             translate: true,
           },
           {
-            baseURL: "https://sos.axelor.com/axelor-office",
+            baseURL: baseURL,
             headers: {
               "Content-Type": "application/json;charset=UTF-8",
               "X-Requested-With": "XMLHttpRequest",
@@ -99,6 +99,12 @@ const CustomerCardList = () => {
     setIsAdding(true);
   };
 
+  const handleDelete = (companyId) => {
+    setCustomerData((prev) =>
+      prev.filter((customer) => customer.id !== companyId)
+    );
+  };
+
   return (
     <div>
       <h1>Customers List</h1>
@@ -112,11 +118,12 @@ const CustomerCardList = () => {
       )}
       {customerData &&
         customerData.map((customer, index) => (
-          <CustomerCard
-            key={index}
-            company={customer}
-            setCustomerData={setCustomerData}
-            index={index}
+            <CustomerCard
+              key={index}
+              company={customer}
+              setCustomerData={setCustomerData}
+              index={index}
+              handleDelete={handleDelete}
           />
         ))}
     </div>

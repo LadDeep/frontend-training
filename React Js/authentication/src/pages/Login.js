@@ -11,7 +11,7 @@ const Login = (props) => {
     baseURL: "",
   });
   const navigate = useNavigate();
-  
+
   const handleChange = (event) => {
     const { name, value } = event.target;
     setState((prevState) => ({
@@ -50,7 +50,7 @@ const Login = (props) => {
                 profileImg: baseURL + "/" + response.data["user.image"],
                 type: response.data["user.login"],
               };
-              props.logIn(userData);
+              props.logIn(userData, baseURL);
               navigate("/");
             })
             .catch((error) => {
