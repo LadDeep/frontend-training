@@ -1,9 +1,9 @@
-import axios from "axios";
 import { useState, useEffect } from "react";
 import AddCustomerForm from "./AddCustomerForm";
 import CustomerCard from "./CustomerCard";
+import axios from "axios";
 
-const CustomerCardList = ({ baseURL }) => {
+const CustomerCardList = () => {
   const [customerData, setCustomerData] = useState([]);
   const [isAdding, setIsAdding] = useState(false);
 
@@ -50,7 +50,7 @@ const CustomerCardList = ({ baseURL }) => {
             translate: true,
           },
           {
-            baseURL: baseURL,
+            baseURL: "https://sos.axelor.com/axelor-office",
             headers: {
               "Content-Type": "application/json;charset=UTF-8",
               "X-Requested-With": "XMLHttpRequest",
@@ -93,6 +93,9 @@ const CustomerCardList = ({ baseURL }) => {
     };
 
     fetchCustomerData();
+    // console.log(getBaseURL());
+    // const customers = api.fetchCustomerData();
+    // setCustomerData(customers);
   }, []);
 
   const handleAdd = () => {

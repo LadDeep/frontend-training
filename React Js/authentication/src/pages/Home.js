@@ -14,7 +14,7 @@ const Home = (props) => {
         <div className="col-2">
             <div className="content">
                 <h1 className="heading">Home Page</h1>
-                <CustomerCardList baseURL={props.baseURL}/>
+                <CustomerCardList />
             </div>
             <div className="user-profile">
                 <Profile user={props.userData}/>

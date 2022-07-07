@@ -15,18 +15,17 @@ const initialUserData = {
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(null);
   const [userData, setUserData] = useState(initialUserData);
-  const [baseURL, setBaseURL] = useState("");
 
-  const logIn = (userData, baseURL) => {
+  const logIn = (userData) => {
     setIsLoggedIn(true);
     setUserData(userData);
-    setBaseURL(baseURL);
-    console.log(isLoggedIn);
+    console.log("Login status:",isLoggedIn);
   };
 
   const logOut = () => {
     setIsLoggedIn(false);
     setUserData(initialUserData);
+    localStorage.clear();
     console.log(isLoggedIn);
   };
 
@@ -37,7 +36,7 @@ function App() {
           path="/"
           element={
             <Protected isLoggedIn={isLoggedIn}>
-              <Home logOut={logOut} userData={userData} baseURL={baseURL} />
+              <Home logOut={logOut} userData={userData} />
             </Protected>
           }
         />

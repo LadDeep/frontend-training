@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 const SUCCESS = 200;
@@ -11,7 +11,7 @@ const Login = (props) => {
     baseURL: "",
   });
   const navigate = useNavigate();
-
+  
   const handleChange = (event) => {
     const { name, value } = event.target;
     setState((prevState) => ({
@@ -50,7 +50,8 @@ const Login = (props) => {
                 profileImg: baseURL + "/" + response.data["user.image"],
                 type: response.data["user.login"],
               };
-              props.logIn(userData, baseURL);
+              props.logIn(userData);
+              localStorage.setItem("UserData", JSON.stringify(userData));
               navigate("/");
             })
             .catch((error) => {
@@ -61,7 +62,17 @@ const Login = (props) => {
       .catch((error) => {
         console.log(error);
       });
-  };
+    }
+
+  useEffect(() => {
+    const xcsrf = localStorage.getItem('X-CSRF Token');
+    const existingUser = localStorage.getItem('UserData');
+    console.log(xcsrf, existingUser);
+    if(xcsrf && existingUser){
+      props.logIn(JSON.parse(existingUser));
+      navigate('/')
+    }
+  }, [])
 
   return (
     <div>
