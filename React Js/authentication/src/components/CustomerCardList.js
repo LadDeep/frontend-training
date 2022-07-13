@@ -1,15 +1,77 @@
 import { useState, useEffect } from "react";
-import AddCustomerForm from "./AddCustomerForm";
 import CustomerCard from "./CustomerCard";
-import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { rest } from "../util/axios";
+import AddCircleIcon from '@mui/icons-material/AddCircle';
+import Box from "@mui/material/Box";
+const api = {
+  fetchCustomerData: async () => {
+    let fetchedResult = [];
+    await rest
+      .post(
+        "/ws/rest/com%2Eaxelor%2Eapps%2Ebase%2Edb%2EPartner/search",
+        {
+          fields: [
+            "fiscalPosition.code",
+            "isProspect",
+            "isEmployee",
+            "isSupplier",
+            "isSubcontractor",
+            "fullName",
+            "fixedPhone",
+            "partnerTypeSelect",
+            "companyStr",
+            "mainAddress",
+            "picture",
+            "titleSelect",
+            "isCustomer",
+            "partnerCategory",
+            "isCarrier",
+            "emailAddress.address",
+            "registrationCode",
+            "isFactor",
+          ],
+          sortBy: null,
+          data: {
+            _domain:
+              "self.isContact = false AND (self.isCustomer = true OR self.isProspect = true)",
+            _domainContext: {
+              _isCustomer: "true",
+              _domain:
+                "self.isContact = false AND (self.isCustomer = true OR self.isProspect = true)",
+              "json-enhance": true,
+              _id: null,
+            },
+          },
+          limit: 39,
+          offset: 0,
+          translate: true,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json;charset=UTF-8",
+            "X-Requested-With": "XMLHttpRequest",
+            "X-CSRF-Token": localStorage.getItem("X-CSRF Token"),
+          },
+        }
+      )
+      .then((response) => {
+        const customerArray = response.data["data"];
+        customerArray.map((customer) => fetchedResult.push(customer));
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    return fetchedResult;
+  },
+};
 
 const CustomerCardList = () => {
   const [customerData, setCustomerData] = useState([]);
-  const [isAdding, setIsAdding] = useState(false);
-
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchCustomerData = () => {
-      axios
+      rest
         .post(
           "/ws/rest/com%2Eaxelor%2Eapps%2Ebase%2Edb%2EPartner/search",
           {
@@ -50,7 +112,6 @@ const CustomerCardList = () => {
             translate: true,
           },
           {
-            baseURL: "https://sos.axelor.com/axelor-office",
             headers: {
               "Content-Type": "application/json;charset=UTF-8",
               "X-Requested-With": "XMLHttpRequest",
@@ -62,29 +123,8 @@ const CustomerCardList = () => {
         .then((response) => {
           const fetchedResult = [];
           const customerArray = response.data["data"];
-          for (let i = 0; i < customerArray.length; i++) {
-            const customer = customerArray[i];
-            const customerData = {
-              id: customer.id,
-              picture: customer.picture,
-              name: customer.fullName,
-              code: customer.registrationCode,
-              address: customer.mainAddress,
-              phone: customer.fixedPhone,
-              partnerCategory: customer.partnerCategory,
-              companyStr: customer.companyStr,
-              fiscalPos: {
-                isCustomer: customer.isCarrier,
-                isCarrier: customer.isCustomer,
-                isEmployee: customer.isEmployee,
-                isFactor: customer.isFactor,
-                isProspect: customer.isProspect,
-                isSubcontractor: customer.isSubcontractor,
-                isSupplier: customer.isSupplier,
-              },
-            };
-            fetchedResult.push(customerData);
-          }
+
+          customerArray.map((customer) => fetchedResult.push(customer));
           setCustomerData(fetchedResult);
         })
         .catch((error) => {
@@ -93,16 +133,32 @@ const CustomerCardList = () => {
     };
 
     fetchCustomerData();
-    // console.log(getBaseURL());
-    // const customers = api.fetchCustomerData();
-    // setCustomerData(customers);
+
+    // const fetchData = async()=>{
+    //   const data = await api.fetchCustomerData();
+    // }
+    // setCustomerData(fetchData);
   }, []);
 
-  const handleAdd = () => {
-    setIsAdding(true);
-  };
+  const handleDelete = (companyId, version) => {
+    // TODO: handle request
 
-  const handleDelete = (companyId) => {
+    rest.post(
+      "/ws/rest/com.axelor.apps.base.db.Partner/removeAll",
+      {
+        records: [
+          {
+            id: companyId,
+            version: version,
+          },
+        ],
+      },
+      {
+        headers: {
+          "X-CSRF-Token": localStorage.getItem("X-CSRF Token"),
+        },
+      }
+    );
     setCustomerData((prev) =>
       prev.filter((customer) => customer.id !== companyId)
     );
@@ -111,22 +167,18 @@ const CustomerCardList = () => {
   return (
     <div>
       <h1>Customers List</h1>
-      <button onClick={handleAdd}>Add</button>
-      {isAdding && (
-        <AddCustomerForm
-          setCurrentState={setIsAdding}
-          setCustomerData={setCustomerData}
-          index={customerData.length}
-        />
-      )}
+      <Box>
+        <AddCircleIcon sx={{color: "green"}} onClick={() => navigate("add")} />
+      </Box>
+      {/* <button onClick={() => navigate("add")}>Add</button> */}
       {customerData &&
         customerData.map((customer, index) => (
-            <CustomerCard
-              key={index}
-              company={customer}
-              setCustomerData={setCustomerData}
-              index={index}
-              handleDelete={handleDelete}
+          <CustomerCard
+            key={index}
+            company={customer}
+            setCustomerData={setCustomerData}
+            index={index}
+            handleDelete={handleDelete}
           />
         ))}
     </div>

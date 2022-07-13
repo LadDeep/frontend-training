@@ -1,7 +1,7 @@
-import { useNavigate } from "react-router-dom"
+import { Outlet, useNavigate } from "react-router-dom"
 import Profile from "../components/Profile";
+import { getBaseURL } from "../util/axios";
 import CustomerCardList from "../components/CustomerCardList";
-
 const Home = (props) => {
     const navigate = useNavigate();
 
@@ -13,8 +13,7 @@ const Home = (props) => {
     return (
         <div className="col-2">
             <div className="content">
-                <h1 className="heading">Home Page</h1>
-                <CustomerCardList />
+                <Outlet />
             </div>
             <div className="user-profile">
                 <Profile user={props.userData}/>

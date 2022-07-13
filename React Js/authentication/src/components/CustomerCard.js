@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import ModifyCustomerForm from "./ModifyCustomerForm";
+import { useNavigate } from "react-router";
 import DeleteIcon from '@mui/icons-material/Delete';
 
 const Label = (props) => {
@@ -13,24 +13,18 @@ const Label = (props) => {
 };
 
 const CustomerCard = (props) => {
-  const [isEditing, setIsEditing] = useState(false);
   const [customer, setCustomer] = useState(props.company);
+  const navigate = useNavigate();
 
-  const handleEditRequest = () => {
-    setIsEditing(!isEditing);
-  };
-
-  const cancelEditRequest = () => {
-      setIsEditing(false);
-  }
-
-  const deleteCustomer = ()=>{
-    console.log("Delete Current prop", customer.id);
-    props.handleDelete(customer.id);
+  const deleteCustomer = (event)=>{
+    if(window.confirm("Are you sure you want to delete this item?")){
+      console.log("Delete Current prop", customer.id);
+      props.handleDelete(customer.id, customer.version);
+    }
+    event.stopPropagation();
   }
 
   useEffect(() => {
-    setIsEditing(false);
     setCustomer(props.company);
   }, [props.company])
 
@@ -38,12 +32,10 @@ const CustomerCard = (props) => {
     <>
       <div
         className="card"
-        onClick={handleEditRequest}
-        onBlur={cancelEditRequest}
-        style={isEditing ? { border: "2px solid red" } : { border: "none" }}
+        onClick={()=>{navigate(`/edit/${customer.id}`)}}
       >
-        <DeleteIcon sx={{float: 'right'}} onClick={deleteCustomer}/>
-        <strong>{customer.name}</strong>
+        <DeleteIcon sx={{float: 'right', "&:hover":{color: 'red'}}} onClick={deleteCustomer}/>
+        <strong>{customer.fullName}</strong>
         <br />
         {customer.picture && (
           <img
@@ -53,16 +45,16 @@ const CustomerCard = (props) => {
           />
         )}
         <br />
-        <span>{customer.code}</span>
+        <span>{customer.registrationCode}</span>
         <address>
-          {customer.address && customer.address.fullName}
+          {customer.mainAddress && customer.mainAddress.fullName}
         </address>
         <span>
-          {customer.phone}
+          {customer.fixedPhone}
           <br />
-          {customer.email}
+          {customer.emailAddress && customer.emailAddress.address}
           <br />
-          {props.partnerCategory && props.partnerCategory.name}
+          {customer.partnerCategory && customer.partnerCategory.name}
           <br />
           <strong>
             <span>Sociétés</span>
@@ -75,51 +67,43 @@ const CustomerCard = (props) => {
           :
           <h4 className="labels-container">
             <Label
-              type={customer.fiscalPos.isCarrier}
+              type={customer.isCarrier}
               name="Carrier"
               color="#FF0000"
             />
             <Label
-              type={customer.fiscalPos.isCustomer}
+              type={customer.isCustomer}
               name="Client"
               color="#EF9D3F"
             />
             <Label
-              type={customer.fiscalPos.isEmployee}
+              type={customer.isEmployee}
               name="Employee"
               color="#5680FC"
             />
             <Label
-              type={customer.fiscalPos.isFactor}
+              type={customer.isFactor}
               name="Factor"
               color="#54FC62"
             />
             <Label
-              type={customer.fiscalPos.isProspect}
+              type={customer.isProspect}
               name="Prospect"
               color="#FC6355"
             />
             <Label
-              type={customer.fiscalPos.isSubcontractor}
+              type={customer.isSubcontractor}
               name="Subcontracting"
               color="#000080"
             />
             <Label
-              type={customer.fiscalPos.isSupplier}
+              type={customer.isSupplier}
               name="Vendor"
               color="#7D54FC"
             />
           </h4>
         </span>
       </div>
-      {isEditing && (
-        <ModifyCustomerForm
-          setCurrentState={setIsEditing}
-          setCustomerData={props.setCustomerData}
-          data={customer}
-          index={props.index}
-        />
-      )}
     </>
   );
 };

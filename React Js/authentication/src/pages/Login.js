@@ -1,8 +1,54 @@
-import axios from "axios";
-import { useState, useEffect } from "react";
+import { rest } from "../util/axios";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const SUCCESS = 200;
+
+const api = {
+  login: async (username, password, baseURL) => {
+    rest.defaults.baseURL = baseURL;
+    let isValidUser = false;
+    await rest
+      .post(
+        "/login.jsp",
+        {
+          username: username,
+          password: password,
+        },
+        {
+          withCredentials: false,
+        }
+      )
+      .then((response) => {
+        if (response.status === SUCCESS) {
+          isValidUser = true;
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    return isValidUser;
+  },
+  getUserInfo: async () => {
+    let userData, csrf;
+    await rest
+      .get("/ws/app/info")
+      .then((response) => {
+        csrf = response.headers["x-csrf-token"];
+        userData = {
+          id: response.data["user.id"],
+          name: response.data["user.name"],
+          lang: response.data["user.lang"],
+          profileImg: rest.defaults.baseURL + "/" + response.data["user.image"],
+          type: response.data["user.login"],
+        };
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    return { userData, csrf };
+  },
+};
 
 const Login = (props) => {
   const [{ username, password, baseURL }, setState] = useState({
@@ -11,7 +57,7 @@ const Login = (props) => {
     baseURL: "",
   });
   const navigate = useNavigate();
-  
+
   const handleChange = (event) => {
     const { name, value } = event.target;
     setState((prevState) => ({
@@ -20,59 +66,17 @@ const Login = (props) => {
     }));
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    axios
-      .post(
-        "/login.jsp",
-        {
-          username: username,
-          password: password,
-        },
-        {
-          baseURL: baseURL,
-        }
-      )
-      .then((response) => {
-        if (response.status === SUCCESS) {
-          axios
-            .get("/ws/app/info", {
-              baseURL: baseURL,
-              withCredentials: true,
-            })
-            .then((response) => {
-              const csrf = response.headers["x-csrf-token"];
-              localStorage.setItem("X-CSRF Token", csrf);
-              const userData = {
-                id: response.data["user.id"],
-                name: response.data["user.name"],
-                lang: response.data["user.lang"],
-                profileImg: baseURL + "/" + response.data["user.image"],
-                type: response.data["user.login"],
-              };
-              props.logIn(userData);
-              localStorage.setItem("UserData", JSON.stringify(userData));
-              navigate("/");
-            })
-            .catch((error) => {
-              console.log(error);
-            });
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    }
+    rest.defaults.baseURL = baseURL;
+    let isLoggedIn = await api.login(username, password, baseURL);
 
-  useEffect(() => {
-    const xcsrf = localStorage.getItem('X-CSRF Token');
-    const existingUser = localStorage.getItem('UserData');
-    console.log(xcsrf, existingUser);
-    if(xcsrf && existingUser){
-      props.logIn(JSON.parse(existingUser));
-      navigate('/')
+    if (isLoggedIn) {
+      const { userData, csrf } = await api.getUserInfo();
+      props.onLogin(userData, csrf, baseURL);
+      navigate("/");
     }
-  }, [])
+  };
 
   return (
     <div>
