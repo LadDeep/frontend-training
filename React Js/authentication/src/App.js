@@ -1,13 +1,13 @@
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
 import { rest } from "./util/axios";
 import { Navigate, Outlet, Route, Routes } from "react-router-dom";
 import "./App.css";
 import AddCustomerForm from "./components/AddCustomerForm";
 import ModifyCustomerForm from "./components/ModifyCustomerForm";
 import CustomerCardList from "./components/CustomerCardList";
-
 import Home from "./pages/Home";
 import Login from "./pages/Login";
+import LinearProgress from "@mui/material/LinearProgress";
 
 function getLoggedInUser() {
   const xcsrf = localStorage.getItem("X-CSRF Token");
@@ -17,8 +17,7 @@ function getLoggedInUser() {
   return xcsrf && existingUser ? existingUser : null;
 }
 
-
-function getBaseURL(){
+function getLoggedInBaseURL() {
   const url = localStorage.getItem("BaseURL");
 
   return url ? url : null;
@@ -46,7 +45,7 @@ function App({ user, setUser, logout }) {
           }
         >
           <Route path="add" element={<AddCustomerForm />} />
-          <Route path="edit" element={<Outlet/>}>
+          <Route path="edit" element={<Outlet />}>
             <Route path=":id" element={<ModifyCustomerForm />} />
           </Route>
           <Route index element={<CustomerCardList />} />
@@ -76,62 +75,20 @@ export default function Main() {
     localStorage.clear("BaseURL");
   };
 
-  React.useState(() => {
+  useEffect(() => {
     try {
       const user = getLoggedInUser();
-      setUserData(JSON.parse(user));
-      
-      const baseURL = getBaseURL();
-      if(baseURL)
-        rest.defaults.baseURL = baseURL
+      console.log(typeof user);
+      user !== String(undefined) && setUserData(JSON.parse(user));
+
+      const baseURL = getLoggedInBaseURL();
+      if (baseURL) rest.defaults.baseURL = baseURL;
     } finally {
       setLoading(false);
     }
   }, []);
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <LinearProgress/>;
 
   return <App user={userData} setUser={setUser} logout={logout} />;
 }
-
-// import React from 'react'
-
-// export const FileUpload = () => {
-//   const [data, setData] = useState();
-
-//   const handleSubmit = () => {
-//     axios
-//       .post(
-//         "https://sos.axelor.com/axelor-office/ws/rest/com.axelor.meta.db.MetaFile/92/content/upload?image=true&v=0&parentId=92&parentModel=com.axelor.meta.db.MetaFile",
-//         data,
-//         {
-//           username: "admin",
-//           password: "admin",
-//         },
-//         {
-//           headers: { "content-type": "multipart/form-data" },
-//         }
-//       )
-//       .then((res) => {
-//         console.log(res);
-//       })
-//       .catch((err) => {
-//         console.log(err);
-//       });
-//   };
-//   console.log(data);
-//   return (
-//     <form onSubmit={handleSubmit}>
-//       <input
-//         type="file"
-//         name="image"
-//         accept=".png"
-//         label="Upload"
-//         onChange={(e) => {
-//           setData(e.target.value);
-//         }}
-//       />
-//       <input type="submit" value="Submit"></input>
-//     </form>
-//   );
-// };

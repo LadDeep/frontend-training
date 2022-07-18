@@ -1,4 +1,4 @@
-import { rest } from "../util/axios";
+import { rest, setBaseURL } from "../util/axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -6,26 +6,28 @@ const SUCCESS = 200;
 
 const api = {
   login: async (username, password, baseURL) => {
-    rest.defaults.baseURL = baseURL;
+    setBaseURL(baseURL);
     let isValidUser = false;
+
     await rest
       .post(
-        "/login.jsp",
+        "/callback",
+        { username, password },
         {
-          username: username,
-          password: password,
-        },
-        {
+          headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+          },
           withCredentials: false,
         }
       )
       .then((response) => {
-        if (response.status === SUCCESS) {
-          isValidUser = true;
-        }
+        console.log(response);
+        if(response.status === SUCCESS);
+          isValidUser = true
       })
       .catch((error) => {
-        console.log(error);
+        console.log(error.response);
       });
     return isValidUser;
   },
@@ -39,7 +41,7 @@ const api = {
           id: response.data["user.id"],
           name: response.data["user.name"],
           lang: response.data["user.lang"],
-          profileImg: rest.defaults.baseURL + "/" + response.data["user.image"],
+          profileImg: `${rest.defaults.baseURL}/${response.data["user.image"]}`,
           type: response.data["user.login"],
         };
       })
@@ -68,7 +70,6 @@ const Login = (props) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    rest.defaults.baseURL = baseURL;
     let isLoggedIn = await api.login(username, password, baseURL);
 
     if (isLoggedIn) {
@@ -79,37 +80,43 @@ const Login = (props) => {
   };
 
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <label>
-          Username:
-          <input
-            type="text"
-            name="username"
-            value={username}
-            onChange={handleChange}
-          />
-        </label>
-        <label>
-          Password:
-          <input
-            type="password"
-            name="password"
-            value={password}
-            onChange={handleChange}
-          />
-        </label>
-        <label>
-          Server URL:
-          <input
-            type="url"
-            name="baseURL"
-            value={baseURL}
-            onChange={handleChange}
-          />
-        </label>
-        <input className="btn" type="submit" value="Login" />
-      </form>
+    <div style={{ margin: "1em auto", width: "500px" }}>
+      <div className="card" style={{ textAlign: "center" }}>
+        <h1 style={{ margin: "1em auto 0.5em" }}>Welcome to Axelor!</h1>
+        <div>
+          <h3 style={{ margin: "0 auto" }}>Sign In</h3>
+          <form onSubmit={handleSubmit}>
+            <label>
+              Username:
+              <input
+                type="text"
+                name="username"
+                value={username}
+                onChange={handleChange}
+              />
+            </label>
+            <label>
+              Password:
+              <input
+                type="password"
+                name="password"
+                value={password}
+                onChange={handleChange}
+              />
+            </label>
+            <label>
+              Server URL:
+              <input
+                type="url"
+                name="baseURL"
+                value={baseURL}
+                onChange={handleChange}
+              />
+            </label>
+            <input className="btn" type="submit" value="Login" />
+          </form>
+        </div>
+      </div>
     </div>
   );
 };

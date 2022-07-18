@@ -2,10 +2,15 @@ import axios from "axios";
 
 export const rest = axios.create({
   headers: {
-    "Content-Type": "application/json;charset=UTF-8",
-    "X-Requested-With": "XMLHttpRequest",
+    "Content-Type": "application/json",
   },
   withCredentials: true,
 });
 
-// export default rest;
+export const getBaseURL = ()=>{
+  return rest.defaults.baseURL;
+}
+
+export const setBaseURL = (url)=>{
+  rest.defaults.baseURL = url;
+}
