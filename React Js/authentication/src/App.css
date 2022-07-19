@@ -1,9 +1,8 @@
 *,
 *:before,
 *:after {
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
-
 
 html,
 body {
@@ -12,8 +11,6 @@ body {
 }
 .heading {
   text-align: center;
-}
-.content {
 }
 .btn {
   display: block;
@@ -26,7 +23,6 @@ body {
   font-weight: 600;
   border-radius: 5px;
 }
-
 form {
   display: flex;
   flex-direction: column;
@@ -42,12 +38,6 @@ label {
 input {
   margin: 0 0.5em;
 }
-
-.col-2 {
-  display: grid;
-  grid-template-columns: 3fr 0.5fr;
-  height: 100vh;
-}
 .profile-container {
   display: flex;
   flex-direction: column;
@@ -55,22 +45,22 @@ input {
 .profile-container > img {
   background-color: #fff;
   border-radius: 50%;
-  /* border: 1px solid gray */
 }
 .user-profile {
   display: flex;
   flex-direction: column;
-  position:fixed;
-  top: 0;
+  position: fixed;
+  top: 3.3em;
   right: 0;
   text-align: center;
   padding: 1em 4.5em;
-  background-color: #3f51b5;
+  background-image: linear-gradient(90deg, #3f51b5, #6a79cf);
   color: #fff;
-  height: 100vh
+  border-radius: 1em;
+  box-shadow: 2px 2px 5px rgb(0 0 0 / 50%);
+  z-index: 1;
 }
 .user-info-heading {
-  border-bottom: 1px solid lightgrey;
   margin: 1em 0 0.5em;
 }
 .user-info-container {
@@ -85,7 +75,8 @@ input {
   font-size: small;
 }
 .card {
-  box-shadow: 1px 1px 4px rgb(0 0 0 / 25%);
+  box-shadow: 0px 0px 5px rgb(0 0 0 / 50%);
+  border-radius: 0.75em;
   padding: 1em;
   margin: 1em;
   min-width: 400px;
@@ -94,51 +85,35 @@ input {
   margin: 0.25em;
   text-align: right;
 }
-
-.sticky {
+.sticky-nav {
+  display: flex;
+  justify-content: flex-end;
   position: sticky;
   top: 0;
+  background-color: #3f51b5;
+  padding: 0.5em 2em;
+  box-shadow: 2px 2px 5px rgb(0 0 0 / 50%);
+  z-index: 1;
+}
+.sticky {
+  position: sticky;
+  top: 3.4em;
   background-color: white;
-  margin: 0;
   padding: 0.5em 1em;
-  width: auto;
   box-shadow: 1px 1px 4px rgb(0 0 0 / 25%);
 }
-
-.cards-view{
-    margin: 2em 1em;
+.cards-view {
+  margin: 2em 1em;
 }
-.color-inv{
+.color-inv {
   background-color: #fff;
   color: #3f51b5;
 }
+
 @media only screen and (max-width: 768px) {
   .cards-view {
     display: flex;
     flex-direction: column;
-    /* width: 100%; */
-  }
-
-  /* .col-2 {
-    display: flex;
-    flex-direction: column;
-  } */
-  .content {
-    border: none;
-    border-bottom: 2px solid gray;
-  }
-  .profile-contianer {
-    flex-direction: row;
-  }
-  .profile-container > div {
-    padding: 0 1em;
-  }
-  .user-profile {
-    display: grid;
-    grid-template-columns: 1fr fit-content(100px);
-  }
-  .btn {
-    margin: auto;
   }
 }
 

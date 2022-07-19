@@ -112,14 +112,20 @@ const CustomerCardList = () => {
   if (!customerData) return <LinearProgress />;
 
   return (
-    <div>
+    <>
       <div className="sticky">
         <h1>Customers</h1>
         <Box
-          sx={{ display: "inline", color: "lightgreen", "&:hover": { color: "green" } }}
+          sx={{
+            display: "flex",
+            color: "lightgreen",
+          }}
           onClick={() => navigate("add")}
         >
-          <AddCircleIcon />
+          <AddCircleIcon
+            sx={{ "&:hover": { color: "green" } }}
+            titleAccess="Add"
+          />
         </Box>
       </div>
       <div className="cards-view">
@@ -134,7 +140,7 @@ const CustomerCardList = () => {
             />
           ))}
       </div>
-    </div>
+    </>
   );
 };
 
