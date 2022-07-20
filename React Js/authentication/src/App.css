@@ -26,17 +26,28 @@ body {
 form {
   display: flex;
   flex-direction: column;
-  justify-content: space-around;
-  margin: 1em auto;
+  margin: 1em 1.5em;
 }
-label {
-  display: grid;
-  grid-template-columns: 0.5fr 1fr;
-  margin: 0 auto;
+.form-control {
+  display: flex;
+  align-items: baseline;
+}
+.form-control > label {
+  text-align: left;
+  min-width: 150px;
   padding: 1em 0 0;
 }
-input {
+.form-control > input {
+  min-width: 250px;
+  width: 100%;
   margin: 0 0.5em;
+  border-radius: 1em;
+  padding: 0.25em 0.5em;
+  box-shadow: none;
+}
+.form-control > input:focus {
+  outline: none;
+  box-shadow: 1px 1px 3px #3f51b5;
 }
 .profile-container {
   display: flex;

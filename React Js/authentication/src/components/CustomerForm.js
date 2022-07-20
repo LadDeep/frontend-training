@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import { rest } from "../util/axios";
+import "../styles/CustomerForm.css";
 
 const api = {
   submitData: async (currentCustomer) => {
@@ -59,11 +60,22 @@ const CustomerForm = (props) => {
   const navigate = useNavigate();
 
   const handleChange = (event) => {
-    const { name, value } = event.target;
-    setCurrentCustomer((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    if (event.target.type !== "checkbox") {
+      const { name, value } = event.target;
+      setCurrentCustomer((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
+    else {
+      const { name, checked } = event.target;
+      let value = Boolean(checked);
+      console.log(value, name, checked);
+      setCurrentCustomer((prev) => ({
+        ...prev,
+        [name]: !prev[name],
+      }));
+    }
   };
 
   const handleSubmit = async (event) => {
@@ -94,14 +106,13 @@ const CustomerForm = (props) => {
   }, [props.data]);
 
   return (
-    <div className="card" style={{ margin: "1em auto", width: "70%" }}>
+    <div className="card customer-form">
       <h1>{props.isNew ? "Add" : "Edit"} Profile</h1>
       <hr />
-      <div style={{ display: "grid", gridTemplateColumns: "0.5fr 3fr" }}>
-        <div style={{ padding: "0.5em" }}>
-          <div style={{ display: "flex", flexDirection: "column" }}>
+      <div className="customer-form__wrapper">
+        <div className="customer-form__profile-img-wrapper">
+          <div className="customer-form__profile-img-container">
             <img
-              style={{ border: "1px solid gray", margin: "0.5em 0" }}
               src={
                 currentCustomer.picture && currentCustomer.picture.id
                   ? `${rest.defaults.baseURL}/ws/rest/com.axelor.meta.db.MetaFile/${currentCustomer.picture.id}/content/download?image=true&v=0&parentId${currentCustomer.picture.id}&parentModel=com.axelor.meta.db.MetaFile`
@@ -112,7 +123,6 @@ const CustomerForm = (props) => {
               width="150px"
             ></img>
             <input
-              style={{ margin: "0.5em 0" }}
               type="file"
               name="file"
               accept="image/*"
@@ -120,58 +130,119 @@ const CustomerForm = (props) => {
             />
           </div>
         </div>
-        <div style={{ margin: "1em 0", verticalAlign: "top" }}>
-          <legend style={{ fontWeight: "bold", fontSize: "24px" }}>
-            Customer Info
-          </legend>
+        <div className="customer-form__form-contianer">
+          <legend className="customer-form__form-heading">Customer Info</legend>
           <form onSubmit={handleSubmit}>
             <fieldset>
-              <label>
-                Name:
+              <div className="form-control">
+                <label htmlFor="name">Name:</label>
                 <input
                   type="text"
+                  id="name"
                   name="name"
                   value={currentCustomer.name || ""}
                   onChange={handleChange}
                   required
                 />
-              </label>
-              <label>
-                Registration Code:
+              </div>
+              <div className="form-control">
+                <label htmlFor="registrationCode">Registration Code:</label>
                 <input
                   type="text"
+                  id="registrationCode"
                   name="registrationCode"
                   value={currentCustomer.registrationCode || ""}
                   onChange={handleChange}
                 />
-              </label>
-              <label>
-                Phone:
+              </div>
+              <div className="form-control">
+                <label htmlFor="fixedPhone">Phone:</label>
                 <input
                   type="tel"
+                  id="fixedPhone"
                   name="fixedPhone"
                   value={currentCustomer.fixedPhone || ""}
                   onChange={handleChange}
                 />
-              </label>
-              <label>
-                Email:
+              </div>
+              <div className="form-control">
+                <label htmlFor="email">Email:</label>
                 <input
                   type="email"
+                  id="email"
                   name="emailAddress.address"
                   value={currentCustomer["emailAddress.address"] || ""}
                   onChange={handleChange}
                 />
-              </label>
-              <label>
-                Sociétés:
-                <input
-                  type="text"
-                  name="companyStr"
-                  value={currentCustomer.companyStr || ""}
-                  onChange={handleChange}
-                />
-              </label>
+              </div>
+              <div>
+                <div style={{ padding: "1em 0 0" }}>Type:</div>
+                <div className="label-types">
+                  <label>
+                    <input
+                      type="checkbox"
+                      name="isSupplier"
+                      checked={currentCustomer.isSupplier || false}
+                      onChange={handleChange}
+                    />
+                    Supplier
+                  </label>
+                  <label>
+                    <input
+                      type="checkbox"
+                      name="isCustomer"
+                      checked={currentCustomer.isCustomer || false}
+                      onChange={handleChange}
+                    />
+                    Customer
+                  </label>
+                  <label>
+                    <input
+                      type="checkbox"
+                      name="isProspect"
+                      checked={currentCustomer.isProspect || false}
+                      onChange={handleChange}
+                    />
+                    Prospect
+                  </label>
+                  <label>
+                    <input
+                      type="checkbox"
+                      name="isEmployee"
+                      checked={currentCustomer.isEmployee || false}
+                      onChange={handleChange}
+                    />
+                    Employee
+                  </label>
+                  <label>
+                    <input
+                      type="checkbox"
+                      name="isFactor"
+                      checked={currentCustomer.isFactor || false}
+                      onChange={handleChange}
+                    />
+                    Factor
+                  </label>
+                  <label>
+                    <input
+                      type="checkbox"
+                      name="isCarrier"
+                      checked={currentCustomer.isCarrier || false}
+                      onChange={handleChange}
+                    />
+                    Carrier
+                  </label>
+                  <label>
+                    <input
+                      type="checkbox"
+                      name="isSubcontractor"
+                      checked={currentCustomer.isSubcontractor || false}
+                      onChange={handleChange}
+                    />
+                    Subcontractor
+                  </label>
+                </div>
+              </div>
               <input
                 className="btn"
                 type="submit"
