@@ -15,16 +15,16 @@ const api = {
         { username, password },
         {
           headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json",
           },
           withCredentials: false,
         }
       )
       .then((response) => {
-        console.log(response);
-        if(response.status === SUCCESS);
-          isValidUser = true
+        if (response.status === SUCCESS) {
+          isValidUser = true;
+        }
       })
       .catch((error) => {
         console.log(error.response);
@@ -34,7 +34,13 @@ const api = {
   getUserInfo: async () => {
     let userData, csrf;
     await rest
-      .get("/ws/app/info")
+      .get("/ws/app/info", {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          "X-CSRF-Token": localStorage.getItem("X-CSRF Token")
+        },
+      })
       .then((response) => {
         csrf = response.headers["x-csrf-token"];
         userData = {
@@ -53,6 +59,7 @@ const api = {
 };
 
 const Login = (props) => {
+  const [isLoginSuccefull, setIsLoginSuccessfull] = useState();
   const [{ username, password, baseURL }, setState] = useState({
     username: "",
     password: "",
@@ -70,9 +77,9 @@ const Login = (props) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    let isLoggedIn = await api.login(username, password, baseURL);
-
-    if (isLoggedIn) {
+    let isLoggedInSuccesfully = await api.login(username, password, baseURL);
+    setIsLoginSuccessfull(isLoggedInSuccesfully);
+    if (isLoggedInSuccesfully) {
       const { userData, csrf } = await api.getUserInfo();
       props.onLogin(userData, csrf, baseURL);
       navigate("/");
@@ -86,33 +93,39 @@ const Login = (props) => {
         <div>
           <h3 style={{ margin: "0 auto" }}>Sign In</h3>
           <form onSubmit={handleSubmit}>
-            <label>
-              Username:
+            <div className="form-control">
+              <label htmlFor="username">Username:</label>
               <input
                 type="text"
+                id="username"
                 name="username"
                 value={username}
                 onChange={handleChange}
               />
-            </label>
-            <label>
-              Password:
+            </div>
+            <div className="form-control">
+              <label htmlFor="password">Password:</label>
               <input
                 type="password"
+                id="password"
                 name="password"
                 value={password}
                 onChange={handleChange}
               />
-            </label>
-            <label>
-              Server URL:
+            </div>
+            <div className="form-control">
+              <label htmlFor="baseURL">Server URL:</label>
               <input
                 type="url"
+                id="baseURL"
                 name="baseURL"
                 value={baseURL}
                 onChange={handleChange}
               />
-            </label>
+            </div>
+            {isLoginSuccefull === false && (
+              <small style={{color: "red", margin: "0.5em 0"}}>Invalid Credentials</small>
+            )}
             <input className="btn" type="submit" value="Login" />
           </form>
         </div>
