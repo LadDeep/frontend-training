@@ -1,8 +1,7 @@
-import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
-import { rest } from "../util/axios";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Box from "@mui/material/Box";
+import { getBaseURL } from "../util/axios";
 
 const Label = (props) => {
   return (
@@ -15,7 +14,7 @@ const Label = (props) => {
 };
 
 const CustomerCard = (props) => {
-  const [customer, setCustomer] = useState(props.company);
+  const customer = props.company;
   const navigate = useNavigate();
 
   const deleteCustomer = (event) => {
@@ -25,10 +24,6 @@ const CustomerCard = (props) => {
     }
     event.stopPropagation();
   };
-
-  useEffect(() => {
-    setCustomer(props.company);
-  }, [props.company]);
 
   return (
     <>
@@ -46,9 +41,9 @@ const CustomerCard = (props) => {
         {customer.picture && (
           <img
             src={
-              (customer.picture && customer.picture.id)
-                  ? `${rest.defaults.baseURL}/ws/rest/com.axelor.meta.db.MetaFile/${customer.picture.id}/content/download?image=true&v=0&parentId${customer.picture.id}&parentModel=com.axelor.meta.db.MetaFile`
-                  : `${rest.defaults.baseURL}/img/company-default.jpg`
+              customer.picture && customer.picture.id
+                ? `${getBaseURL()}/ws/rest/com.axelor.meta.db.MetaFile/${customer.picture.id}/content/download?image=true&v=0&parentId${customer.picture.id}&parentModel=com.axelor.meta.db.MetaFile`
+                : `${getBaseURL()}/img/company-default.jpg`
             }
             alt=""
             height="100px"
