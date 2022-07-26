@@ -1,62 +1,12 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
-import { rest } from "../util/axios";
+import { getBaseURL } from "../util/axios";
+import { api } from "../util/api";
 import "../styles/CustomerForm.css";
-
-const api = {
-  submitData: async (currentCustomer) => {
-    await rest.post(
-      "/ws/rest/com.axelor.apps.base.db.Partner",
-      {
-        data: currentCustomer,
-      },
-      {
-        headers: {
-          "X-CSRF-Token": localStorage.getItem("X-CSRF Token"),
-        },
-        withCredentials: true,
-      }
-    );
-  },
-
-  uploadImage: async (file) => {
-    let id;
-    await rest
-      .post(
-        "/ws/rest/com.axelor.meta.db.MetaFile/upload",
-        {
-          file: file,
-          field: `${undefined}`,
-          request: `${JSON.stringify({
-            data: {
-              data: {
-                fileName: file.name,
-                fileType: file.type,
-                fileSize: file.size,
-                $upload: { file: {} },
-              },
-            },
-          })}`,
-        },
-        {
-          headers: {
-            Accept: "*/*",
-            "Content-Type": "multipart/form-data",
-            "X-CSRF-Token": localStorage.getItem("X-CSRF Token"),
-          },
-        }
-      )
-      .then((response) => {
-        if (response.data.status === 0) {
-          id = response.data.data[0].id;
-        }
-      });
-    return id;
-  },
-};
 
 const CustomerForm = (props) => {
   const [currentCustomer, setCurrentCustomer] = useState(props.data);
+  const [partnerCategories, setPartnerCategories] = useState();
   const navigate = useNavigate();
 
   const handleChange = (event) => {
@@ -66,11 +16,8 @@ const CustomerForm = (props) => {
         ...prev,
         [name]: value,
       }));
-    }
-    else {
-      const { name, checked } = event.target;
-      let value = Boolean(checked);
-      console.log(value, name, checked);
+    } else {
+      const name = event.target.name;
       setCurrentCustomer((prev) => ({
         ...prev,
         [name]: !prev[name],
@@ -97,13 +44,28 @@ const CustomerForm = (props) => {
     }
   };
 
+  const handlePartnerCategoryChange = (event) => {
+    let partner = partnerCategories.filter(
+      (partner) => partner.name === event.target.value
+    );
+    setCurrentCustomer((prev) => ({
+      ...prev,
+      partnerCategory: partner[0],
+    }));
+  };
+
   const cancelRequest = () => {
     navigate("/");
   };
 
   useEffect(() => {
-    setCurrentCustomer(props.data);
-  }, [props.data]);
+    const fetchPartnerCategories = async () => {
+      const categories = await api.getPartnerCategories();
+      setPartnerCategories(categories);
+    };
+    fetchPartnerCategories();
+    return () => {};
+  }, []);
 
   return (
     <div className="card customer-form">
@@ -115,8 +77,12 @@ const CustomerForm = (props) => {
             <img
               src={
                 currentCustomer.picture && currentCustomer.picture.id
-                  ? `${rest.defaults.baseURL}/ws/rest/com.axelor.meta.db.MetaFile/${currentCustomer.picture.id}/content/download?image=true&v=0&parentId${currentCustomer.picture.id}&parentModel=com.axelor.meta.db.MetaFile`
-                  : `${rest.defaults.baseURL}/img/company-default.jpg`
+                  ? `${getBaseURL()}/ws/rest/com.axelor.meta.db.MetaFile/${
+                      currentCustomer.picture.id
+                    }/content/download?image=true&v=0&parentId${
+                      currentCustomer.picture.id
+                    }&parentModel=com.axelor.meta.db.MetaFile`
+                  : `${getBaseURL()}/img/company-default.jpg`
               }
               alt=""
               height="150px"
@@ -162,16 +128,6 @@ const CustomerForm = (props) => {
                   id="fixedPhone"
                   name="fixedPhone"
                   value={currentCustomer.fixedPhone || ""}
-                  onChange={handleChange}
-                />
-              </div>
-              <div className="form-control">
-                <label htmlFor="email">Email:</label>
-                <input
-                  type="email"
-                  id="email"
-                  name="emailAddress.address"
-                  value={currentCustomer["emailAddress.address"] || ""}
                   onChange={handleChange}
                 />
               </div>
@@ -242,6 +198,25 @@ const CustomerForm = (props) => {
                     Subcontractor
                   </label>
                 </div>
+              </div>
+              <div className="form-control">
+                <label>
+                  Partner Category: 
+                  <select onChange={handlePartnerCategoryChange}>
+                    {partnerCategories &&
+                      partnerCategories.map((category) => (
+                        <option
+                          key={category.id}
+                          selected={
+                            currentCustomer.partnerCategory &&
+                            currentCustomer.partnerCategory.id === category.id
+                          }
+                        >
+                          {category.name}
+                        </option>
+                      ))}
+                  </select>
+                </label>
               </div>
               <input
                 className="btn"
