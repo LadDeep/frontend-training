@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { rest } from "./util/axios";
 import { Navigate, Outlet, Route, Routes } from "react-router-dom";
 import "./App.css";
 import AddCustomerForm from "./components/AddCustomerForm";
@@ -8,20 +7,8 @@ import CustomerCardList from "./components/CustomerCardList";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import LinearProgress from "@mui/material/LinearProgress";
-
-function getLoggedInUser() {
-  const xcsrf = localStorage.getItem("X-CSRF Token");
-  const existingUser = localStorage.getItem("UserData");
-
-  console.log(xcsrf, existingUser);
-  return xcsrf && existingUser ? existingUser : null;
-}
-
-function getLoggedInBaseURL() {
-  const url = localStorage.getItem("BaseURL");
-
-  return url ? url : null;
-}
+import { setBaseURL, setCsrf } from "./util/axios";
+import { api } from "./util/api";
 
 const Protected = ({ isLoggedIn, children }) => {
   if (!isLoggedIn) {
@@ -31,8 +18,9 @@ const Protected = ({ isLoggedIn, children }) => {
   return children;
 };
 
-function App({ user, setUser, logout }) {
+function App({ user, loginUser, logoutUser }) {
   const isLoggedIn = Boolean(user);
+  console.log(isLoggedIn, user);
   return (
     <div className="App">
       <Routes>
@@ -40,7 +28,7 @@ function App({ user, setUser, logout }) {
           path="/"
           element={
             <Protected isLoggedIn={isLoggedIn}>
-              <Home logOut={logout} userData={user} />
+              <Home logOut={logoutUser} userData={user} />
             </Protected>
           }
         >
@@ -50,7 +38,7 @@ function App({ user, setUser, logout }) {
           </Route>
           <Route index element={<CustomerCardList />} />
         </Route>
-        <Route path="/login" element={<Login onLogin={setUser} />} />
+        <Route path="/login" element={<Login onLogin={loginUser} />} />
       </Routes>
     </div>
   );
@@ -59,36 +47,28 @@ function App({ user, setUser, logout }) {
 export default function Main() {
   const [loading, setLoading] = useState(true);
   const [userData, setUserData] = useState(null);
-
-  const setUser = (data, csrf, baseURL) => {
-    console.log(data, csrf);
+  const loginUser = (data) => {
     setUserData(data);
-    localStorage.setItem("X-CSRF Token", csrf);
-    localStorage.setItem("UserData", JSON.stringify(data));
-    localStorage.setItem("BaseURL", baseURL);
   };
 
-  const logout = () => {
+  const logoutUser = () => {
     setUserData(null);
-    localStorage.clear("UserData");
-    localStorage.clear("X-CSRF Token");
-    localStorage.clear("BaseURL");
   };
 
   useEffect(() => {
-    try {
-      const user = getLoggedInUser();
-      console.log(typeof user);
-      user !== String(undefined) && setUserData(JSON.parse(user));
-
-      const baseURL = getLoggedInBaseURL();
-      if (baseURL) rest.defaults.baseURL = baseURL;
-    } finally {
+    const checkUserValidity = async () => {
+      setBaseURL("/axelor-office");
+      setCsrf();
+      const data = await api.getUserInfo();
+      data && loginUser(data);
       setLoading(false);
-    }
+    };
+    checkUserValidity();
+
+    return () => {};
   }, []);
 
-  if (loading) return <LinearProgress/>;
+  if (loading) return <LinearProgress />;
 
-  return <App user={userData} setUser={setUser} logout={logout} />;
+  return <App user={userData} loginUser={loginUser} logoutUser={logoutUser} />;
 }
