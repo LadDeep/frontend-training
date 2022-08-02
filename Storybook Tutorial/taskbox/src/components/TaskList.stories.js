@@ -1,6 +1,6 @@
 import React from "react";
 import * as TaskStories from "./Task.stories";
-import { TaskList } from "./TaskList";
+import  TaskList  from "./TaskList";
 import { Provider } from "react-redux";
 import { configureStore, createSlice } from "@reduxjs/toolkit";
 export const MockedState = {
@@ -22,7 +22,7 @@ const Mockstore = ({ taskboxState, children }) => (
     store={configureStore({
       reducer: {
         taskbox: createSlice({
-          name: "taskbox",
+          name: 'taskbox',
           initialState: taskboxState,
           reducers: {
             updateTaskState: (state, action) => {
@@ -47,13 +47,13 @@ export default {
   excludeStories: /.*MockedState$/,
 };
 
-// const Template = (args) => <TaskList {...args} />;
+const Template = (args) => <TaskList {...args} />;
 
-export const Default = {
-  decorators: [
-    (story) => <Mockstore taskboxState={MockedState}>{story()}</Mockstore>,
-  ],
-};
+export const Default = Template.bind({});
+
+Default.decorators = [
+  (story) => <Mockstore taskboxState={MockedState}>{story()}</Mockstore>,
+];
 
 export const WithPinnedTasks = {
   decorators: [

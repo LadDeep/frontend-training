@@ -11,6 +11,7 @@ export default function Task({
         htmlFor="checked"
         aria-label={`archiveTask-${id}`}
         className="checkbox"
+        data-testid={`archiveTask-${id}`}
       >
         <input
           type="checkbox"
@@ -32,6 +33,7 @@ export default function Task({
       </label>
       {state !== "TASK_ARCHIVED" && (
         <button
+          type="button"
           className="pin-button"
           onClick={() => onPinTask(id)}
           id={`pinTask-${id}`}
